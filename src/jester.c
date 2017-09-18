@@ -156,6 +156,9 @@ int main(int argc, char *argv[])
  	char getstatus[64] = "echo $?\n";
  	int done = 0, end = 0, ret = 0;
 
+ 	tty_send(fd, "\r");
+ 	tty_recv(fd);
+
  	while (2 > 1) {
  		c = tty_recv(fd);
 
