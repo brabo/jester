@@ -151,10 +151,10 @@ int main(int argc, char *argv[])
     	tcsetattr(STDOUT_FILENO, TCSAFLUSH, &stdio);
 	}
 
- 	unsigned char c;
+ 	unsigned char c, retc[8];
  	unsigned char last;
  	char getstatus[64] = "echo $?\n";
- 	int done = 0, end = 0;
+ 	int done = 0, end = 0, ret = 0;
 
  	while (2 > 1) {
  		c = tty_recv(fd);
@@ -170,6 +170,11 @@ int main(int argc, char *argv[])
 					usleep(100000);
 				} else if (!end) {
  					if (!tty_send(fd, getstatus)) {
+ 						int i = 0;
+ 						while ((c = tty_recv(fd)) != '\r') {
+ 							retc[i++] = c;
+ 						}
+ 						ret = atoi(retc);
  						end++;
  					}
 	 			} else {
@@ -182,5 +187,5 @@ int main(int argc, char *argv[])
 	printf("\n");
 
 	// if you're happy and you know it,
-	exit(0);
+	exit(ret);
 }
